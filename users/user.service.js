@@ -14,14 +14,19 @@ module.exports = {
 };
 
 async function authenticate({ username, password }) {
-    const user = await User.findOne({ username });
-    if (user && bcrypt.compareSync(password, user.hash)) {
-        const { hash, ...userWithoutHash } = user.toObject();
-        const token = jwt.sign({ sub: user.id }, config.secret);
-        return {
-            ...userWithoutHash,
-            token
-        };
+    const user = await User.findOne({ mobile: username });
+    // if (user && bcrypt.compareSync(password, user.hash)) {
+    //     const { hash, ...userWithoutHash } = user.toObject();
+    //     const token = jwt.sign({ sub: user.id }, config.secret);
+    //     return {
+    //         ...userWithoutHash,
+    //         token
+    //     };
+    // }
+    if(user && password == user.password){
+        return{
+            user
+        }
     }
 }
 
@@ -35,8 +40,8 @@ async function getById(id) {
 
 async function create(userParam) {
     // validate
-    if (await User.findOne({ username: userParam.username })) {
-        throw 'Username "' + userParam.username + '" is already taken';
+    if (await User.findOne({ mobile: userParam.mobile })) {
+        throw 'Mobile number "' + userParam.mobile + '" is already exists';
     }
 
     const user = new User(userParam);
@@ -55,8 +60,8 @@ async function update(id, userParam) {
 
     // validate
     if (!user) throw 'User not found';
-    if (user.username !== userParam.username && await User.findOne({ username: userParam.username })) {
-        throw 'Username "' + userParam.username + '" is already taken';
+    if (user.name !== userParam.name && await User.findOne({ username: userParam.name })) {
+        throw 'Username "' + userParam.name + '" is already taken';
     }
 
     // hash password if it was entered
