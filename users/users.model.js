@@ -6,9 +6,12 @@ const schema = new Schema({
     mobile :{type :Number, required: true},
     email: { type: String, required: true },
     password:{ type: String, required: true },
-    createdDate: { type: Date, default: Date.now }
+    createdDate: { type: Date, default: Date.now },
+    cart:{type:Array, default:[]},
+    roles:{type:Array, default:['user']},
+    status:{type:String}
 });
 
 schema.set('toJSON', { virtuals: true });
 
-module.exports = mongoose.model('User', schema);
+module.exports = mongoose.model('Users', schema);

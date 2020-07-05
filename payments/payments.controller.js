@@ -3,13 +3,12 @@ const router = express.Router();
 const paymentService = require('./payments.service');
 const Insta = require('instamojo-nodejs');
 const url = require('url');
-const querystring = require('querystring');
 
-console.log("PAYMENT CONTROLLER")
 
 // routes
 router.post('/request', payment);
 router.get('/callback', paymentCallback);
+router.post('/saveTransaction', saveTransaction);
 // router.get('/', getAll);
 
 module.exports = router;
@@ -51,4 +50,10 @@ function paymentCallback(req,res, next) {
     //send sms
     return res.redirect('http://localhost:3000/payment_complete/?payment_id='+responseData.payment_id);
   }
+}
+
+function saveTransaction(req, res, next) {
+  paymentService.saveTransaction(req.body)
+      .then(data => res.send(data))
+      .catch(err => next(err));
 }
